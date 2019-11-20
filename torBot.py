@@ -154,11 +154,7 @@ def main():
     # If url flag is set then check for accompanying flag set. Only one
     # additional flag can be set with -u/--url flag
     if args.url:
-        try:
-            node = LinkNode(args.url)
-        except (ValueError, HTTPError, ConnectionError) as err:
-            raise err
-        LinkIO.display_ip()
+        node, tree = gen_tree(link=args.url, stop_depth=args.depth)
         # -m/--mail
         if args.mail:
             print(node.emails)
@@ -170,10 +166,6 @@ def main():
             if args.save:
                 print('Nothing to save.\n')
         if args.visualize:
-            if args.depth:
-                tree = LinkTree(node, stop_depth=args.depth)
-            else:
-                tree = LinkTree(node)
             tree.show()
         if args.download:
             tree = LinkTree(node)
@@ -187,6 +179,21 @@ def main():
         print("usage: See torBot.py -h for possible arguments.")
 
     print("\n\n")
+
+
+def gen_tree(link, stop_depth):
+    try:
+        node = LinkNode(link)
+    except (ValueError, HTTPError, ConnectionError) as err:
+        raise err
+    LinkIO.display_ip()
+
+    if not stop_depth:
+        stop_depth = 1
+
+    tree = LinkTree(root_node=node, stop_depth=stop_depth)
+
+    return node, tree
 
 
 if __name__ == '__main__':
