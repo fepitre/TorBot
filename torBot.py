@@ -33,6 +33,7 @@ def connect(address, port, no_socks):
     Args:
         address (str): Address for port to bind to.
         port (str): Establishes connect to this port.
+        no_socks (bool): Don't use socks proxy
     """
     if no_socks:
         return
@@ -58,8 +59,8 @@ def connect(address, port, no_socks):
         6 - protocol being used is TCP
         Last two arguments should be a tuple containing the address and port
         """
-        return [(socket.AF_INET, socket.SOCK_STREAM, 6,
-                 '', (args[0], args[1]))]
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", (args[0], args[1]))]
+
     socket.getaddrinfo = getaddrinfo
 
 
@@ -74,7 +75,9 @@ def header():
                          / __/ / / / /_/ / __ \/ __ \/ /
                         / /_/ /_/ / _, _/ /_/ / /_/ / /
                         \__/\____/_/ |_/_____/\____/_/  V{VERSION}
-              """.format(VERSION=__VERSION)
+              """.format(
+        VERSION=__VERSION
+    )
     banner = color(banner, "red")
 
     title = r"""
@@ -95,39 +98,49 @@ def get_args():
     """
     Parses user flags passed to TorBot
     """
-    parser = argparse.ArgumentParser(prog="TorBot",
-                                     usage="Gather and analayze data from Tor sites.")
+    parser = argparse.ArgumentParser(
+        prog="TorBot", usage="Gather and analayze data from Tor sites."
+    )
     parser.add_argument("--version", action="store_true",
-                        help="Show current version of TorBot.")
+                        help="Show current version of TorBot."
+                        )
     parser.add_argument("--update", action="store_true",
-                        help="Update TorBot to the latest stable version")
+                        help="Update TorBot to the latest stable version"
+                        )
     parser.add_argument("-q", "--quiet", action="store_true")
     parser.add_argument("-u", "--url", help="Specifiy a website link to crawl")
     parser.add_argument("--ip", help="Change default ip of tor")
     parser.add_argument("-p", "--port", help="Change default port of tor")
     parser.add_argument("-s", "--save", action="store_true",
-                        help="Save results in a file")
+                        help="Save results in a file"
+                        )
     parser.add_argument("-m", "--mail", action="store_true",
-                        help="Get e-mail addresses from the crawled sites")
-    parser.add_argument("-e", "--extension", action='append', dest='extension',
+                        help="Get e-mail addresses from the crawled sites"
+                        )
+    parser.add_argument("-e", "--extension", action="append", dest="extension",
                         default=[],
-                        help=' '.join(("Specifiy additional website",
-                                       "extensions to the list(.com , .org, .etc)")))
+                        help="Specifiy additional website extensions "
+                             "to the list(.com , .org, .etc)"
+                        )
     parser.add_argument("-i", "--info", action="store_true",
-                        help=' '.join(("Info displays basic info of the",
-                                       "scanned site")))
-    parser.add_argument("--depth", help="Specifiy max depth of crawler (default 1)")
+                        help="Info displays basic info of the scanned site"
+                        )
+    parser.add_argument("--depth",
+                        help="Specifiy max depth of crawler (default 1)"
+                        )
     parser.add_argument("-v", "--visualize", action="store_true",
-                        help="Visualizes tree of data gathered.")
+                        help="Visualizes tree of data gathered."
+                        )
     parser.add_argument("-d", "--download", action="store_true",
-                        help="Downloads tree of data gathered.")
-    parser.add_argument("--gather",
-                        action="store_true",
-                        help="Gather data for analysis")
-    parser.add_argument("--no-socks",
-                        action="store_true",
+                        help="Downloads tree of data gathered."
+                        )
+    parser.add_argument("--gather", action="store_true",
+                        help="Gather data for analysis"
+                        )
+    parser.add_argument("--no-socks", action="store_true",
                         help="Don't use local SOCKS. Useful when TorBot is"
-                             " launched behind a Whonix Gateway")
+                             " launched behind a Whonix Gateway"
+                        )
     return parser.parse_args()
 
 
@@ -159,12 +172,12 @@ def main():
         if args.mail:
             print(node.emails)
             if args.save:
-                saveJson('Emails', node.emails)
+                saveJson("Emails", node.emails)
         # -i/--info
         if args.info:
             execute_all(node.uri)
             if args.save:
-                print('Nothing to save.\n')
+                print("Nothing to save.\n")
         if args.visualize:
             tree.show()
         if args.download:
@@ -196,7 +209,7 @@ def gen_tree(link, stop_depth):
     return node, tree
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
