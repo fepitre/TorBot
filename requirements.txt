@@ -1,3 +1,4 @@
+socks
 beautifulsoup4==4.6.0
 PySocks==1.6.7
 termcolor==1.1.0
